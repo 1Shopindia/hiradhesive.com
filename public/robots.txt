@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /auth
+
+# Explicit AI crawler allowances
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://hiradhesive.com/sitemap.xml
+Sitemap: https://hiradhesive.com/sitemap-pages.xml
+Sitemap: https://hiradhesive.com/sitemap-products.xml
+Sitemap: https://hiradhesive.com/sitemap-blogs.xml
+Sitemap: https://hiradhesive.com/sitemap-images.xml

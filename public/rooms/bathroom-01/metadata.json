@@ -1,0 +1,7 @@
+{
+  "id": "bathroom-01",
+  "name": "Compact Bathroom",
+  "category": "Bathroom",
+  "defaultTileSize": "300x300",
+  "lightingHint": "cool-daylight"
+}

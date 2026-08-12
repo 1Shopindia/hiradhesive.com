@@ -1,0 +1,7 @@
+{
+  "id": "kitchen-01",
+  "name": "Open Kitchen",
+  "category": "Kitchen",
+  "defaultTileSize": "600x600",
+  "lightingHint": "bright-daylight"
+}

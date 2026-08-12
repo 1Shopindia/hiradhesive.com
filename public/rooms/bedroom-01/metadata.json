@@ -1,0 +1,7 @@
+{
+  "id": "bedroom-01",
+  "name": "Classic Bedroom",
+  "category": "Bedroom",
+  "defaultTileSize": "600x600",
+  "lightingHint": "warm-morning"
+}

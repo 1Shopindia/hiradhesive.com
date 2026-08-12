@@ -1,0 +1,7 @@
+{
+  "id": "living-room-01",
+  "name": "Modern Living Room",
+  "category": "Living Room",
+  "defaultTileSize": "600x600",
+  "lightingHint": "neutral-daylight"
+}

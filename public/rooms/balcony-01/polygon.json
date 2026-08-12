@@ -1,0 +1,7 @@
+{
+  "size": [1600, 1008],
+  "points": [[0, 1008], [1600, 1008], [1330, 465], [270, 465]],
+  "pixelsPerMeter": 300,
+  "widthMeters": 3.0,
+  "depthMeters": 2.5
+}

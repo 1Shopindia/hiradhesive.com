@@ -1,0 +1,31 @@
+# HIR Industries
+
+> Manufacturer of tile adhesives, epoxy grouts, waterproofing systems, wall solutions and construction chemicals. Serving India, Middle East, USA, UK, Australia, South-East Asia and Africa since 1972.
+
+HIR Industries builds high-performance construction chemicals engineered with German-American-Japanese technology. Product ranges include C1 to C2TES2-grade tile adhesives, epoxy and cement grouts, elastomeric waterproofing membranes, block jointers, wall putty, heat-reflective coatings and professional installation tools.
+
+## Pages
+
+- [Home](https://hiradhesive.com/): Overview of HIR product ranges and technology
+- [Products](https://hiradhesive.com/products): Full product catalogue by category
+- [Blogs](https://hiradhesive.com/blogs): Construction-chemical guides and best practices
+- [About](https://hiradhesive.com/about): Company history, technology partners, manufacturing
+- [Contact](https://hiradhesive.com/contact): Enquiries, dealership, technical support
+
+## Featured products
+
+- [HIR ALPHA — C2T Tile Adhesive](https://hiradhesive.com/products/alpha)
+- [HIR DELTA+ — C2TES2 large-format tile adhesive](https://hiradhesive.com/products/delta-plus)
+- [HIR EPOXY GROUT — food-grade, UV-resistant grout](https://hiradhesive.com/products/epoxy-grout)
+- [HIR SUPERCOAT — cement-polymer waterproofing membrane](https://hiradhesive.com/products/super-coat)
+- [HIR Royal O Seal — corner sealant for tile joints](https://hiradhesive.com/products/royal-o-seal)
+
+## Featured articles
+
+- [Choosing the Right Tile Adhesive for Your Project](https://hiradhesive.com/blogs/choosing-the-right-tile-adhesive)
+- [Why Choose Epoxy Grout?](https://hiradhesive.com/blogs/why-choose-epoxy-grout)
+- [Importance of Waterproofing in Construction](https://hiradhesive.com/blogs/importance-of-waterproofing)
+
+## Optional
+
+- [Visualizer tool](https://hiradhesive.com/visualizer): Interactive floor tile + epoxy grout preview

@@ -1,0 +1,7 @@
+{
+  "id": "balcony-01",
+  "name": "City-View Balcony",
+  "category": "Balcony",
+  "defaultTileSize": "600x600",
+  "lightingHint": "outdoor-daylight"
+}
