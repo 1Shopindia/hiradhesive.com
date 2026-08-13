@@ -72,7 +72,7 @@ function AdminCatalogue() {
             <input type="file" accept="application/pdf" hidden
               onChange={e => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ""; }} />
           </label>
-          <button onClick={save} disabled={busy} className="bg-brand text-white rounded-md px-4 py-2 text-sm disabled:opacity-50">Save</button>
+          <button type="button" onClick={save} disabled={busy} className="bg-brand text-white rounded-md px-4 py-2 text-sm disabled:opacity-50">Save</button>
           {url && (
             <a href={url} target="_blank" rel="noreferrer" className="text-sm text-brand underline">Preview current catalogue</a>
           )}

@@ -1,8 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 import { existsSync } from "fs";
+import { getStorageConfig } from "../db/config.server";
 
-const STORAGE_BASE_PATH = process.env.STORAGE_BASE_PATH || "/tmp/hir-storage";
+const getStorageBasePath = () => getStorageConfig().basePath;
 
 // Allowed MIME types per bucket
 const ALLOWED_MIME_TYPES: Record<string, string[]> = {
@@ -30,6 +31,7 @@ class StorageError extends Error {
 
 // Initialize storage directories
 async function ensureStorageDirectories() {
+  const STORAGE_BASE_PATH = getStorageBasePath();
   const buckets = ["product-images", "blog-images", "product-pdfs"];
   for (const bucket of buckets) {
     const bucketPath = path.join(STORAGE_BASE_PATH, bucket);
@@ -60,6 +62,7 @@ function generateSafeFilename(originalName: string): string {
 
 // Validate path is within base directory
 function validatePath(filePath: string): void {
+  const STORAGE_BASE_PATH = getStorageBasePath();
   const resolved = path.resolve(filePath);
   const base = path.resolve(STORAGE_BASE_PATH);
 
@@ -159,6 +162,7 @@ export async function uploadFile(
 
   // Generate safe filename
   const safeFilename = generateSafeFilename(filename);
+  const STORAGE_BASE_PATH = getStorageBasePath();
   const filePath = path.join(STORAGE_BASE_PATH, bucket, safeFilename);
 
   // Validate path
@@ -193,6 +197,7 @@ export async function getFile(bucket: string, filename: string): Promise<Buffer>
     throw new StorageError("Invalid bucket", 400);
   }
 
+  const STORAGE_BASE_PATH = getStorageBasePath();
   const filePath = path.join(STORAGE_BASE_PATH, bucket, filename);
 
   // Validate path
@@ -224,6 +229,7 @@ export async function deleteFile(bucket: string, filename: string): Promise<void
     throw new StorageError("Invalid bucket", 400);
   }
 
+  const STORAGE_BASE_PATH = getStorageBasePath();
   const filePath = path.join(STORAGE_BASE_PATH, bucket, filename);
 
   // Validate path

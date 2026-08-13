@@ -1,33 +1,27 @@
 import mysql from "mysql2/promise";
 import { v4 as uuidv4 } from "uuid";
+import { getDatabaseConfig } from "./config.server";
 
 // MySQL connection pool
 let pool: mysql.Pool | null = null;
 
 function getPool(): mysql.Pool {
   if (!pool) {
-    const host = process.env.DATABASE_HOST;
-    const port = process.env.DATABASE_PORT ? parseInt(process.env.DATABASE_PORT, 10) : 3306;
-    const database = process.env.DATABASE_NAME;
-    const user = process.env.DATABASE_USER;
-    const password = process.env.DATABASE_PASSWORD;
-
-    if (!host) throw new Error("Missing DATABASE_HOST environment variable");
-    if (!database) throw new Error("Missing DATABASE_NAME environment variable");
-    if (!user) throw new Error("Missing DATABASE_USER environment variable");
-    if (password === undefined) throw new Error("Missing DATABASE_PASSWORD environment variable");
+    const config = getDatabaseConfig();
 
     pool = mysql.createPool({
-      host,
-      port,
-      database,
-      user,
-      password,
+      host: config.host,
+      port: config.port,
+      database: config.database,
+      user: config.user,
+      password: config.password,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
       enableKeepAlive: true,
       keepAliveInitialDelay: 0,
+      connectTimeout: 10000, // 10 seconds
+      charset: 'utf8mb4',
     });
 
     console.log("[db] MySQL connection pool initialized");
@@ -501,4 +495,46 @@ export async function upsertSiteSetting(key: string, value: string): Promise<voi
     "INSERT INTO site_settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?",
     [key, value, value]
   );
+}
+
+/**
+ * Database health check (safe for diagnostics)
+ * Returns connection status without exposing credentials
+ */
+export async function healthCheck(): Promise<{
+  connected: boolean;
+  environment: string;
+  host: string;
+  database: string;
+  user: string;
+  error?: string;
+  errorCode?: string;
+}> {
+  try {
+    const config = getDatabaseConfig();
+    const db = getPool();
+    
+    // Test connection with simple query
+    await db.query("SELECT 1 as health");
+    
+    return {
+      connected: true,
+      environment: config.environment,
+      host: config.host,
+      database: config.database,
+      user: config.user,
+    };
+  } catch (error: any) {
+    const config = getDatabaseConfig();
+    
+    return {
+      connected: false,
+      environment: config.environment,
+      host: config.host,
+      database: config.database,
+      user: config.user,
+      error: error.message || 'Unknown error',
+      errorCode: error.code || error.errno || 'UNKNOWN',
+    };
+  }
 }

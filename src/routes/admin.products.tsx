@@ -134,7 +134,7 @@ function AdminProducts() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h2 className="text-xl font-semibold">Products ({filtered.length}/{products.length})</h2>
-        <button onClick={() => setDraft({ ...EMPTY })} className="bg-brand text-white rounded-full px-4 py-2 text-sm">+ New Product</button>
+        <button type="button" onClick={() => setDraft({ ...EMPTY })} className="bg-brand text-white rounded-full px-4 py-2 text-sm">+ New Product</button>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -159,9 +159,9 @@ function AdminProducts() {
               </p>
               <p className="text-xs text-muted-foreground truncate">{p.category} · /{p.slug}</p>
             </div>
-            <button onClick={() => setDraft(toDraft(p))} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Edit</button>
-            <button onClick={() => duplicate(p)} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Duplicate</button>
-            <button onClick={async () => { if (confirm(`Delete "${p.name}"?`)) { try { await deleteProduct(p.slug); toast.success("Deleted"); } catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); } } }}
+            <button type="button" onClick={() => setDraft(toDraft(p))} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Edit</button>
+            <button type="button" onClick={() => duplicate(p)} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Duplicate</button>
+            <button type="button" onClick={async () => { if (confirm(`Delete "${p.name}"?`)) { try { await deleteProduct(p.slug); toast.success("Deleted"); } catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); } } }}
               className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-red-500 hover:text-red-500">Delete</button>
 
           </div>
@@ -173,7 +173,7 @@ function AdminProducts() {
           <div className="bg-white w-full max-w-4xl rounded-2xl p-6 my-8 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">{draft.originalSlug ? "Edit Product" : "New Product"}</h3>
-              <button onClick={() => setDraft(null)} className="text-neutral-500 hover:text-neutral-900">✕</button>
+              <button type="button" onClick={() => setDraft(null)} className="text-neutral-500 hover:text-neutral-900">✕</button>
             </div>
 
             <Section title="Basic Information">
@@ -267,9 +267,9 @@ function AdminProducts() {
             </Section>
 
             <div className="flex flex-wrap justify-end gap-2 mt-6 sticky bottom-0 bg-white pt-4 border-t border-border">
-              <button onClick={() => setDraft(null)} className="px-4 py-2 text-sm rounded-md hover:bg-neutral-100">Cancel</button>
-              <button onClick={() => persistDraft(draft, false)} className="px-4 py-2 text-sm rounded-md border border-border hover:border-brand hover:text-brand">Save as Draft</button>
-              <button onClick={() => persistDraft(draft, true)} className="bg-brand text-white rounded-md px-4 py-2 text-sm">Save & Publish</button>
+              <button type="button" onClick={() => setDraft(null)} className="px-4 py-2 text-sm rounded-md hover:bg-neutral-100">Cancel</button>
+              <button type="button" onClick={() => persistDraft(draft, false)} className="px-4 py-2 text-sm rounded-md border border-border hover:border-brand hover:text-brand">Save as Draft</button>
+              <button type="button" onClick={() => persistDraft(draft, true)} className="bg-brand text-white rounded-md px-4 py-2 text-sm">Save & Publish</button>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
--- MySQL schema for HIR Industries CMS
--- Migrated from Supabase PostgreSQL
+-- Production Database Initialization Script
+-- HIR Industries - MySQL Schema
+-- Safe to run on existing database - uses CREATE TABLE IF NOT EXISTS
+-- Does NOT drop existing tables or delete data
 
 -- Products table
 CREATE TABLE IF NOT EXISTS products (
@@ -28,7 +30,8 @@ CREATE TABLE IF NOT EXISTS products (
   application_list JSON,
   sort_order INT NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_products_published_sort (published, sort_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Blogs table
@@ -47,7 +50,8 @@ CREATE TABLE IF NOT EXISTS blogs (
   seo_description VARCHAR(170),
   sort_order INT NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_blogs_published_sort (published, sort_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Site settings table
@@ -57,7 +61,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Admin users table
+-- Admin users table (for future auth implementation)
 CREATE TABLE IF NOT EXISTS admin_users (
   id CHAR(36) PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -65,6 +69,14 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_products_published_sort ON products(published, sort_order);
-CREATE INDEX IF NOT EXISTS idx_blogs_published_sort ON blogs(published, sort_order);
+-- Insert default site settings if they don't exist
+INSERT IGNORE INTO site_settings (`key`, value) VALUES 
+  ('catalogue_title', 'HIR Master Product Catalogue'),
+  ('catalogue_pdf', NULL);
+
+-- Verification: Show created tables
+SELECT 'Database initialization complete!' as status;
+SHOW TABLES;
+SELECT COUNT(*) as products_count FROM products;
+SELECT COUNT(*) as blogs_count FROM blogs;
+SELECT COUNT(*) as settings_count FROM site_settings;

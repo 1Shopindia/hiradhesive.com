@@ -93,7 +93,7 @@ function AdminBlogs() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h2 className="text-xl font-semibold">Blogs ({filtered.length}/{blogs.length})</h2>
-        <button onClick={() => setDraft({ ...EMPTY })} className="bg-brand text-white rounded-full px-4 py-2 text-sm">+ New Blog</button>
+        <button type="button" onClick={() => setDraft({ ...EMPTY })} className="bg-brand text-white rounded-full px-4 py-2 text-sm">+ New Blog</button>
       </div>
 
       <input placeholder="Search title or slug…" value={search} onChange={e => setSearch(e.target.value)}
@@ -112,9 +112,9 @@ function AdminBlogs() {
               </p>
               <p className="text-xs text-muted-foreground truncate">/{b.slug}</p>
             </div>
-            <button onClick={() => setDraft(toDraft(b))} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Edit</button>
-            <button onClick={() => duplicate(b)} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Duplicate</button>
-            <button onClick={async () => { if (confirm(`Delete "${b.title}"?`)) { try { await deleteBlog(b.slug); toast.success("Deleted"); } catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); } } }}
+            <button type="button" onClick={() => setDraft(toDraft(b))} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Edit</button>
+            <button type="button" onClick={() => duplicate(b)} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Duplicate</button>
+            <button type="button" onClick={async () => { if (confirm(`Delete "${b.title}"?`)) { try { await deleteBlog(b.slug); toast.success("Deleted"); } catch (e) { toast.error(e instanceof Error ? e.message : "Delete failed"); } } }}
               className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-red-500 hover:text-red-500">Delete</button>
 
           </div>
@@ -126,7 +126,7 @@ function AdminBlogs() {
           <div className="bg-white w-full max-w-3xl rounded-2xl p-6 my-8 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">{draft.originalSlug ? "Edit Blog" : "New Blog"}</h3>
-              <button onClick={() => setDraft(null)} className="text-neutral-500 hover:text-neutral-900">✕</button>
+              <button type="button" onClick={() => setDraft(null)} className="text-neutral-500 hover:text-neutral-900">✕</button>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 text-sm">
               <Field label="Slug *"><input value={draft.slug} onChange={e => setDraft({ ...draft, slug: e.target.value })} className={input} /></Field>
@@ -155,9 +155,9 @@ function AdminBlogs() {
               <Field label="SEO description" className="sm:col-span-2"><textarea rows={2} value={draft.seo_description} onChange={e => setDraft({ ...draft, seo_description: e.target.value })} className={input} /></Field>
             </div>
             <div className="flex flex-wrap justify-end gap-2 mt-6">
-              <button onClick={() => setDraft(null)} className="px-4 py-2 text-sm rounded-md hover:bg-neutral-100">Cancel</button>
-              <button onClick={() => persist(draft, false)} className="px-4 py-2 text-sm rounded-md border border-border hover:border-brand hover:text-brand">Save as Draft</button>
-              <button onClick={() => persist(draft, true)} className="bg-brand text-white rounded-md px-4 py-2 text-sm">Save & Publish</button>
+              <button type="button" onClick={() => setDraft(null)} className="px-4 py-2 text-sm rounded-md hover:bg-neutral-100">Cancel</button>
+              <button type="button" onClick={() => persist(draft, false)} className="px-4 py-2 text-sm rounded-md border border-border hover:border-brand hover:text-brand">Save as Draft</button>
+              <button type="button" onClick={() => persist(draft, true)} className="bg-brand text-white rounded-md px-4 py-2 text-sm">Save & Publish</button>
             </div>
           </div>
         </div>
