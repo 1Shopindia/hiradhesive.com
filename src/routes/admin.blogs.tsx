@@ -22,13 +22,51 @@ const EMPTY: Draft = {
   seo_title: "", seo_description: "", sort_order: 0,
 };
 
+/**
+ * Normalize published_at to YYYY-MM-DD format.
+ * Handles:
+ * - null/undefined → current date
+ * - JavaScript Date object → extract date part
+ * - ISO string from MySQL → extract date part
+ * - Already formatted YYYY-MM-DD string → use as-is
+ */
+function normalizePublishedDate(value: string | Date | null | undefined): string {
+  if (!value) return new Date().toISOString().slice(0, 10);
+  
+  // If it's already a Date object, convert to ISO and extract date
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10);
+  }
+  
+  // If it's a string, handle various formats
+  if (typeof value === "string") {
+    // Already in YYYY-MM-DD format (10 characters)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return value;
+    }
+    
+    // ISO timestamp or other parseable format - convert via Date
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        return date.toISOString().slice(0, 10);
+      }
+    } catch (e) {
+      console.warn("[admin.blogs] Could not parse date:", value, e);
+    }
+  }
+  
+  // Fallback to current date
+  return new Date().toISOString().slice(0, 10);
+}
+
 function toDraft(b: CMSBlog): Draft {
   return {
     slug: b.slug, title: b.title, image: b.image ?? "", excerpt: b.excerpt ?? "",
     sections: JSON.stringify(b.sections, null, 2),
     author: b.author ?? "", category: b.category ?? "",
     published: b.published,
-    published_at: (b.published_at ?? new Date().toISOString()).slice(0, 10),
+    published_at: normalizePublishedDate(b.published_at),
     seo_title: b.seo_title ?? "", seo_description: b.seo_description ?? "",
     sort_order: b.sort_order,
     originalSlug: b.slug,
