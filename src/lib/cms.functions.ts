@@ -133,31 +133,52 @@ export const adminSaveProduct = createServerFn({ method: "POST" })
       requireSlug(p?.slug, "Save product");
       if (!p.name?.trim()) throw new Error("Save product: a name is required.");
       
-      // If slug changed, delete old product first
-      if (data.originalSlug && data.originalSlug !== p.slug) {
-        await deleteProduct(data.originalSlug);
-      }
-      
       const productData = {
-        slug: p.slug, name: p.name, image: p.image, category: p.category,
-        short: p.short, description: p.description,
-        category_label: p.category_label, application_area: p.application_area,
-        pack: p.pack, coverage: p.coverage,
-        surface: p.surface, color: p.color,
-        features: p.features, applications: p.applications,
-        gallery: p.gallery ?? [], video_url: p.video_url,
+        slug: p.slug,
+        name: p.name,
+        image: p.image,
+        category: p.category,
+        short: p.short,
+        description: p.description,
+        category_label: p.category_label,
+        application_area: p.application_area,
+        pack: p.pack,
+        coverage: p.coverage,
+        surface: p.surface,
+        color: p.color,
+        features: p.features,
+        applications: p.applications,
+        gallery: p.gallery ?? [],
+        video_url: p.video_url,
         published: p.published,
-        seo_title: p.seo_title, seo_description: p.seo_description,
-        pdf: p.pdf, shades_image: p.shades_image,
+        seo_title: p.seo_title,
+        seo_description: p.seo_description,
+        pdf: p.pdf,
+        shades_image: p.shades_image,
         application_list: p.application_list,
         sort_order: p.sort_order,
       };
       
-      // Check if product exists (and wasn't just deleted)
-      const existing = data.originalSlug === p.slug ? await getProductBySlug(p.slug) : null;
-      if (existing) {
+      console.log('[adminSaveProduct] Saving product:', {
+        slug: p.slug,
+        originalSlug: data.originalSlug,
+        category: p.category,
+        isSlugChange: data.originalSlug && data.originalSlug !== p.slug,
+        isEdit: !!data.originalSlug
+      });
+      
+      // Handle slug change - delete old, create new
+      if (data.originalSlug && data.originalSlug !== p.slug) {
+        console.log('[adminSaveProduct] Slug changed from', data.originalSlug, 'to', p.slug);
+        await deleteProduct(data.originalSlug);
+        await createProduct(productData);
+      } else if (data.originalSlug) {
+        // Editing existing product (slug unchanged)
+        console.log('[adminSaveProduct] Updating existing product');
         await updateProduct(p.slug, productData);
       } else {
+        // Creating new product
+        console.log('[adminSaveProduct] Creating new product');
         await createProduct(productData);
       }
       

@@ -259,6 +259,9 @@ export async function updateProduct(slug: string, data: Partial<ProductInsert>):
   const fields: string[] = [];
   const values: any[] = [];
 
+  console.log('[updateProduct] Starting update for slug:', slug);
+  console.log('[updateProduct] Data received:', { category: data.category, name: data.name });
+
   if (data.slug !== undefined) {
     fields.push("slug = ?");
     values.push(data.slug);
@@ -274,6 +277,7 @@ export async function updateProduct(slug: string, data: Partial<ProductInsert>):
   if (data.category !== undefined) {
     fields.push("category = ?");
     values.push(data.category);
+    console.log('[updateProduct] Category will be updated to:', data.category);
   }
   if (data.short !== undefined) {
     fields.push("short = ?");
@@ -355,7 +359,12 @@ export async function updateProduct(slug: string, data: Partial<ProductInsert>):
   if (fields.length === 0) return;
 
   values.push(slug);
-  await db.query(`UPDATE products SET ${fields.join(", ")} WHERE slug = ?`, values);
+  const query = `UPDATE products SET ${fields.join(", ")} WHERE slug = ?`;
+  console.log('[updateProduct] Final query:', query);
+  console.log('[updateProduct] Final values:', values);
+  
+  const [result] = await db.query(query, values);
+  console.log('[updateProduct] Query result:', result);
 }
 
 export async function deleteProduct(slug: string): Promise<void> {
