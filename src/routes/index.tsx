@@ -51,7 +51,14 @@ const APPLICATIONS = [
   { title: "Infrastructure", desc: "Water tanks, basements and structures needing total waterproofing." },
 ];
 
-const CERTS = ["ISO Certified", "ISI Certified", "Food Grade Certified", "US-FDA Tested", "Green Building Compliant", "UV Resistant Range"];
+const CERTS = [
+  { text: "ISO Certified", icon: "🏆" },
+  { text: "ISI Certified", icon: "✓" },
+  { text: "Food Grade Certified", icon: "🍴" },
+  { text: "US-FDA Tested", icon: "🔬" },
+  { text: "Green Building Compliant", icon: "🌱" },
+  { text: "UV Resistant Range", icon: "☀️" }
+];
 
 function HomePage() {
   const [selected, setSelected] = useState<CategoryInfo | null>(null);
@@ -309,8 +316,9 @@ function HomePage() {
 
           <Reveal className="mt-14 flex flex-wrap justify-center gap-3">
             {CERTS.map(c => (
-              <span key={c} className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-muted-foreground shadow-soft">
-                {c}
+              <span key={c.text} className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-muted-foreground shadow-soft inline-flex items-center gap-2">
+                <span aria-hidden="true" className="text-base">{c.icon}</span>
+                {c.text}
               </span>
             ))}
           </Reveal>

@@ -16,12 +16,32 @@ export function CatalogueDownload({ variant = "light", className = "" }: { varia
     ? "bg-white/10 border border-white/20 text-white hover:bg-brand hover:border-brand"
     : "bg-brand text-white hover:brightness-110";
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Force download by fetching and creating blob
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'HIR-Industries-Catalogue.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch(error => {
+        console.error('Download failed:', error);
+        // Fallback to direct link
+        window.open(url, '_blank');
+      });
+  };
+
   return (
     <a
       href={url}
-      download
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={handleDownload}
       aria-label={`Download ${title} (PDF)`}
       className={`${base} ${skin} ${className}`}
     >

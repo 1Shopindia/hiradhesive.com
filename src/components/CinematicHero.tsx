@@ -107,14 +107,14 @@ export function CinematicHero() {
 
     startWithSound()
       .then(() => {
+        // Video started playing with sound successfully
         markIntroPlayed();
       })
       .catch(() => {
-        // Audible autoplay blocked — keep the visual loop running silently and
-        // unmute on the very first user interaction.
+        // Audible autoplay blocked — start muted and unmute on first user interaction
         toMutedLoop();
 
-        const events = ["pointerdown", "click", "touchstart", "keydown", "scroll", "wheel"] as const;
+        const events = ["pointerdown", "click", "touchstart", "keydown"] as const;
         const onFirstGesture = () => {
           cleanupGestures();
           let already = false;
@@ -125,6 +125,9 @@ export function CinematicHero() {
           }
           if (already) return;
           v.currentTime = 0;
+          v.muted = false;
+          v.volume = 1;
+          v.loop = false;
           startWithSound()
             .then(() => markIntroPlayed())
             .catch(() => toMutedLoop());

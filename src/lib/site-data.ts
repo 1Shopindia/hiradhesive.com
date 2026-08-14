@@ -109,6 +109,7 @@ export const faqs = [
   { q: "Can waterproofing products be applied to existing structures?", a: "Yes, many waterproofing products are designed for both new construction and retrofit applications. However, surface preparation and compatibility with existing materials should be considered before application." },
   { q: "What is the typical lifespan of waterproofing treatments?", a: "The lifespan of waterproofing treatments varies depending on factors such as product quality, application method, environmental conditions, and maintenance. Generally, quality waterproofing products can provide protection for several years with proper installation and upkeep." },
   { q: "Are there any special precautions to take during the application of these products?", a: "Follow manufacturer instructions carefully, including surface preparation, application techniques, curing times, and safety precautions. Proper ventilation and personal protective equipment may be necessary, especially when working with epoxy products or waterproofing chemicals." },
+  { q: "What makes HIR products different from other construction chemical brands?", a: "HIR combines over 50 years of manufacturing experience with German-American-Japanese technology to produce premium construction chemicals. Our products undergo rigorous testing and are certified to international standards including ISO, ISI, and US-FDA, ensuring consistent quality and performance across our entire range." },
 ];
 
 export const testimonials = [
