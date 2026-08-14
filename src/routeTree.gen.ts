@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DbDiagnosticRouteImport } from './routes/db-diagnostic'
 import { Route as SitemapBlogsDotxmlRouteImport } from './routes/sitemap-blogs[.]xml'
 import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
@@ -56,6 +57,11 @@ const CalculatorRoute = CalculatorRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DbDiagnosticRoute = DbDiagnosticRouteImport.update({
+  id: '/db-diagnostic',
+  path: '/db-diagnostic',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapBlogsDotxmlRoute = SitemapBlogsDotxmlRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
+  '/db-diagnostic': typeof DbDiagnosticRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
+  '/db-diagnostic': typeof DbDiagnosticRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
+  '/db-diagnostic': typeof DbDiagnosticRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/calculator'
     | '/contact'
+    | '/db-diagnostic'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
@@ -257,6 +267,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/calculator'
     | '/contact'
+    | '/db-diagnostic'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/calculator'
     | '/contact'
+    | '/db-diagnostic'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
@@ -308,6 +320,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   CalculatorRoute: typeof CalculatorRoute
   ContactRoute: typeof ContactRoute
+  DbDiagnosticRoute: typeof DbDiagnosticRoute
   SitemapBlogsDotxmlRoute: typeof SitemapBlogsDotxmlRoute
   SitemapImagesDotxmlRoute: typeof SitemapImagesDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
@@ -357,6 +370,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/db-diagnostic': {
+      id: '/db-diagnostic'
+      path: '/db-diagnostic'
+      fullPath: '/db-diagnostic'
+      preLoaderRoute: typeof DbDiagnosticRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap-blogs.xml': {
@@ -514,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   CalculatorRoute: CalculatorRoute,
   ContactRoute: ContactRoute,
+  DbDiagnosticRoute: DbDiagnosticRoute,
   SitemapBlogsDotxmlRoute: SitemapBlogsDotxmlRoute,
   SitemapImagesDotxmlRoute: SitemapImagesDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,

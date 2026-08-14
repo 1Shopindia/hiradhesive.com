@@ -12,7 +12,11 @@ export type CMSProduct = {
   surface: string | null;
   color: string | null;
   features: string[] | null;
-  applications: { no: number; application: string; size: string }[] | null;
+  applications: {
+    exterior?: string[];
+    interior?: string[];
+    [key: string]: string[] | undefined;
+  } | null;
   gallery: string[];
   video_url: string | null;
   published: boolean;

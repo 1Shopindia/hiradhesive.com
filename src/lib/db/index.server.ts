@@ -165,8 +165,8 @@ function rowToProduct(row: any): ProductRow {
     shades_image: row.shades_image,
     application_list: parseJsonColumn(row.application_list),
     sort_order: row.sort_order,
-    created_at: row.created_at,
-    updated_at: row.updated_at,
+    created_at: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
+    updated_at: row.updated_at ? new Date(row.updated_at).toISOString() : new Date().toISOString(),
   };
 }
 
@@ -182,12 +182,12 @@ function rowToBlog(row: any): BlogRow {
     author: row.author,
     category: row.category,
     published: Boolean(row.published),
-    published_at: row.published_at,
+    published_at: row.published_at ? new Date(row.published_at).toISOString() : null,
     seo_title: row.seo_title,
     seo_description: row.seo_description,
     sort_order: row.sort_order,
-    created_at: row.created_at,
-    updated_at: row.updated_at,
+    created_at: row.created_at ? new Date(row.created_at).toISOString() : new Date().toISOString(),
+    updated_at: row.updated_at ? new Date(row.updated_at).toISOString() : new Date().toISOString(),
   };
 }
 

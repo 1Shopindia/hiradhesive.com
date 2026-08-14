@@ -104,7 +104,9 @@ function AdminProducts() {
       sort_order: Number(d.sort_order) || 0,
     };
     try {
-      await saveProduct(record, d.originalSlug && d.originalSlug !== slug ? d.originalSlug : undefined);
+      // Always pass originalSlug when editing (even if slug unchanged)
+      // Only pass undefined when creating new product (originalSlug not set)
+      await saveProduct(record, d.originalSlug);
       toast.success("Saved");
       setDraft(null);
     } catch (e) {

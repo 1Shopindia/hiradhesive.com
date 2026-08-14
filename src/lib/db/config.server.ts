@@ -128,12 +128,24 @@ export function getStorageConfig(): StorageConfig {
   if (!basePath) {
     const error = '[storage:config] Missing STORAGE_BASE_PATH environment variable';
     console.error(error);
+    console.error('[storage:config] Environment:', env);
+    console.error('[storage:config] STORAGE_BASE_PATH configured:', !!basePath);
+    console.error('[storage:config] Available env vars with STORAGE or PATH:', 
+      Object.keys(process.env).filter(k => k.includes('STORAGE') || k.includes('BASE')));
+    console.error('[storage:config] Node.js process.env keys count:', Object.keys(process.env).length);
+    
+    // Production must have this configured in Hostinger environment panel
+    if (env === 'production') {
+      console.error('[storage:config] PRODUCTION ERROR: STORAGE_BASE_PATH must be set in Hostinger Node.js App environment variables panel');
+      console.error('[storage:config] Expected value: /home/u860840011/domains/hiradhesive.com/public_html/uploads');
+    }
+    
     throw new Error(error);
   }
   
   console.log('[storage:config] Storage configuration loaded:', {
     environment: env,
-    basePath,
+    configured: true, // Never log the actual path for security
   });
   
   return {
