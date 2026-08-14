@@ -31,6 +31,7 @@ import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
 import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
+import { Route as StorageProductPdfsSplatRouteImport } from './routes/storage.product-pdfs.$'
 import { Route as ApiPublicPdfSplatRouteImport } from './routes/api/public/pdf.$'
 import { Route as ApiPublicImagesBucketFilenameRouteImport } from './routes/api/public/images.$bucket.$filename'
 
@@ -144,6 +145,11 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StorageProductPdfsSplatRoute = StorageProductPdfsSplatRouteImport.update({
+  id: '/storage/product-pdfs/$',
+  path: '/storage/product-pdfs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPdfSplatRoute = ApiPublicPdfSplatRouteImport.update({
   id: '/api/public/pdf/$',
   path: '/api/public/pdf/$',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/storage/product-pdfs/$': typeof StorageProductPdfsSplatRoute
   '/api/public/pdf/$': typeof ApiPublicPdfSplatRoute
   '/api/public/images/$bucket/$filename': typeof ApiPublicImagesBucketFilenameRoute
 }
@@ -204,6 +211,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/products': typeof ProductsIndexRoute
+  '/storage/product-pdfs/$': typeof StorageProductPdfsSplatRoute
   '/api/public/pdf/$': typeof ApiPublicPdfSplatRoute
   '/api/public/images/$bucket/$filename': typeof ApiPublicImagesBucketFilenameRoute
 }
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/storage/product-pdfs/$': typeof StorageProductPdfsSplatRoute
   '/api/public/pdf/$': typeof ApiPublicPdfSplatRoute
   '/api/public/images/$bucket/$filename': typeof ApiPublicImagesBucketFilenameRoute
 }
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blogs/'
     | '/products/'
+    | '/storage/product-pdfs/$'
     | '/api/public/pdf/$'
     | '/api/public/images/$bucket/$filename'
   fileRoutesByTo: FileRoutesByTo
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/products'
+    | '/storage/product-pdfs/$'
     | '/api/public/pdf/$'
     | '/api/public/images/$bucket/$filename'
   id:
@@ -310,6 +321,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blogs/'
     | '/products/'
+    | '/storage/product-pdfs/$'
     | '/api/public/pdf/$'
     | '/api/public/images/$bucket/$filename'
   fileRoutesById: FileRoutesById
@@ -331,6 +343,7 @@ export interface RootRouteChildren {
   ProductsSlugRoute: typeof ProductsSlugRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  StorageProductPdfsSplatRoute: typeof StorageProductPdfsSplatRoute
   ApiPublicPdfSplatRoute: typeof ApiPublicPdfSplatRoute
   ApiPublicImagesBucketFilenameRoute: typeof ApiPublicImagesBucketFilenameRoute
 }
@@ -491,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/storage/product-pdfs/$': {
+      id: '/storage/product-pdfs/$'
+      path: '/storage/product-pdfs/$'
+      fullPath: '/storage/product-pdfs/$'
+      preLoaderRoute: typeof StorageProductPdfsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/pdf/$': {
       id: '/api/public/pdf/$'
       path: '/api/public/pdf/$'
@@ -545,6 +565,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsSlugRoute: ProductsSlugRoute,
   BlogsIndexRoute: BlogsIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  StorageProductPdfsSplatRoute: StorageProductPdfsSplatRoute,
   ApiPublicPdfSplatRoute: ApiPublicPdfSplatRoute,
   ApiPublicImagesBucketFilenameRoute: ApiPublicImagesBucketFilenameRoute,
 }

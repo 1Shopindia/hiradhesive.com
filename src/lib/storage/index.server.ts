@@ -179,8 +179,10 @@ export async function uploadFile(
 
   // Return public URL based on bucket
   if (bucket === "product-pdfs") {
-    return `/storage/product-pdfs/${safeFilename}`;
+    // PDFs are served via API route for security and validation
+    return `/api/public/pdf/${safeFilename}`;
   } else {
+    // Images are served directly from public folder
     return `/storage/${bucket}/${safeFilename}`;
   }
 }
@@ -255,8 +257,10 @@ export async function deleteFile(bucket: string, filename: string): Promise<void
  */
 export function getFileUrl(bucket: string, filename: string): string {
   if (bucket === "product-pdfs") {
-    return `/storage/product-pdfs/${filename}`;
+    // PDFs are served via API route for security and validation
+    return `/api/public/pdf/${filename}`;
   } else {
+    // Images are served directly from public folder
     return `/storage/${bucket}/${filename}`;
   }
 }
