@@ -282,7 +282,13 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
 // -------- Newsletter Subscriptions --------
 
 export const subscribeToNewsletter = createServerFn({ method: "POST" })
-  .inputValidator((d: { email: string; ipAddress?: string; userAgent?: string }) => d)
+  .validator((d: unknown) => {
+    const data = d as { email?: string; ipAddress?: string; userAgent?: string };
+    if (!data || typeof data.email !== 'string') {
+      throw new Error("Email is required");
+    }
+    return data as { email: string; ipAddress?: string; userAgent?: string };
+  })
   .handler(async ({ data }) => {
     if (!data.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new Error("Please provide a valid email address.");
@@ -305,7 +311,13 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
   });
 
 export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
-  .inputValidator((d: { token: string }) => d)
+  .validator((d: unknown) => {
+    const data = d as { token?: string };
+    if (!data || typeof data.token !== 'string') {
+      throw new Error("Unauthorized");
+    }
+    return data as { token: string };
+  })
   .handler(async ({ data }) => {
     checkToken(data.token);
     try {
@@ -317,7 +329,13 @@ export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
   });
 
 export const adminDeleteNewsletterSubscriber = createServerFn({ method: "POST" })
-  .inputValidator((d: { token: string; id: number }) => d)
+  .validator((d: unknown) => {
+    const data = d as { token?: string; id?: number };
+    if (!data || typeof data.token !== 'string' || typeof data.id !== 'number') {
+      throw new Error("Invalid request");
+    }
+    return data as { token: string; id: number };
+  })
   .handler(async ({ data }) => {
     checkToken(data.token);
     try {

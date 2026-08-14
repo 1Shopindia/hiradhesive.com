@@ -62,12 +62,15 @@ export function CinematicHero() {
     if (!v) return;
 
     const INTRO_KEY = "hir-hero-intro-played";
-    let introDone = false;
-    try {
-      introDone = sessionStorage.getItem(INTRO_KEY) === "1";
-    } catch {
-      introDone = false;
-    }
+    
+    // Check if intro already played
+    const checkIntroPlayed = () => {
+      try {
+        return sessionStorage.getItem(INTRO_KEY) === "1";
+      } catch {
+        return false;
+      }
+    };
 
     const markIntroPlayed = () => {
       try {
@@ -83,12 +86,13 @@ export function CinematicHero() {
       v.play().catch(() => {});
     };
 
-    if (introDone) {
-      // Already heard the intro this session — silent loop, no flicker, no restart.
+    // If intro already played, start muted loop immediately
+    if (checkIntroPlayed()) {
       toMutedLoop();
       return;
     }
 
+    // First time: try to play with sound
     let cleanupGestures = () => {};
 
     const startWithSound = () => {
@@ -103,38 +107,48 @@ export function CinematicHero() {
       v.currentTime = 0;
       toMutedLoop();
     };
+    
     v.addEventListener("ended", onEnded);
 
+    // Try autoplay with sound
     startWithSound()
       .then(() => {
-        // Video started playing with sound successfully
-        markIntroPlayed();
+        // Success! Mark as played
+        console.log("[Hero] Playing with sound");
       })
-      .catch(() => {
-        // Audible autoplay blocked — start muted and unmute on first user interaction
+      .catch((err) => {
+        console.log("[Hero] Autoplay blocked, waiting for user gesture:", err.name);
+        // Autoplay blocked - start muted and wait for user gesture
         toMutedLoop();
 
         const events = ["pointerdown", "click", "touchstart", "keydown"] as const;
         const onFirstGesture = () => {
           cleanupGestures();
-          let already = false;
-          try {
-            already = sessionStorage.getItem(INTRO_KEY) === "1";
-          } catch {
-            already = false;
-          }
-          if (already) return;
+          
+          // Check again if already marked
+          if (checkIntroPlayed()) return;
+          
+          console.log("[Hero] User gesture detected, restarting with sound");
           v.currentTime = 0;
           v.muted = false;
           v.volume = 1;
           v.loop = false;
+          
           startWithSound()
-            .then(() => markIntroPlayed())
-            .catch(() => toMutedLoop());
+            .then(() => {
+              markIntroPlayed();
+              console.log("[Hero] Playing with sound after gesture");
+            })
+            .catch(() => {
+              console.log("[Hero] Still blocked, staying muted");
+              toMutedLoop();
+            });
         };
+        
         cleanupGestures = () => {
           events.forEach(e => window.removeEventListener(e, onFirstGesture));
         };
+        
         events.forEach(e => window.addEventListener(e, onFirstGesture, { once: true, passive: true }));
       });
 

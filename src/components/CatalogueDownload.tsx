@@ -19,16 +19,26 @@ export function CatalogueDownload({ variant = "light", className = "" }: { varia
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     
-    // Create a hidden iframe to trigger download
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = url;
-    document.body.appendChild(iframe);
-    
-    // Remove iframe after 2 seconds
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 2000);
+    try {
+      // Method 1: Try direct link with download attribute
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'HIR-Industries-Catalogue.pdf';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Method 2: Fallback to window.open after slight delay
+      setTimeout(() => {
+        window.open(url, '_blank');
+      }, 100);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Final fallback: just open in new tab
+      window.open(url, '_blank');
+    }
   };
 
   return (
