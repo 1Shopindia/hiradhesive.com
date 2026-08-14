@@ -538,3 +538,40 @@ export async function healthCheck(): Promise<{
     };
   }
 }
+
+// Newsletter Subscriber functions
+export interface NewsletterSubscriberRow {
+  id: number;
+  email: string;
+  subscribed_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  status: 'active' | 'unsubscribed';
+}
+
+export interface NewsletterSubscriberInsert {
+  email: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+}
+
+export async function subscribeNewsletter(data: NewsletterSubscriberInsert): Promise<void> {
+  const db = getPool();
+  await db.query(
+    `INSERT INTO newsletter_subscribers (email, ip_address, user_agent, status) VALUES (?, ?, ?, 'active')`,
+    [data.email, data.ipAddress ?? null, data.userAgent ?? null]
+  );
+}
+
+export async function getNewsletterSubscribers(): Promise<NewsletterSubscriberRow[]> {
+  const db = getPool();
+  const [rows] = await db.query(
+    "SELECT id, email, subscribed_at, ip_address, user_agent, status FROM newsletter_subscribers ORDER BY subscribed_at DESC"
+  );
+  return rows as NewsletterSubscriberRow[];
+}
+
+export async function deleteNewsletterSubscriber(id: number): Promise<void> {
+  const db = getPool();
+  await db.query("DELETE FROM newsletter_subscribers WHERE id = ?", [id]);
+}

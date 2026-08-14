@@ -278,3 +278,53 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
       fail("Upload", error);
     }
   });
+
+// -------- Newsletter Subscriptions --------
+
+export const subscribeToNewsletter = createServerFn({ method: "POST" })
+  .inputValidator((d: { email: string; ipAddress?: string; userAgent?: string }) => d)
+  .handler(async ({ data }) => {
+    if (!data.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      throw new Error("Please provide a valid email address.");
+    }
+    try {
+      const { subscribeNewsletter } = await import("@/lib/db/index.server");
+      await subscribeNewsletter({
+        email: data.email.trim().toLowerCase(),
+        ipAddress: data.ipAddress ?? null,
+        userAgent: data.userAgent ?? null,
+      });
+      return { ok: true };
+    } catch (error: any) {
+      // If duplicate email, show friendly message
+      if (error?.code === 'ER_DUP_ENTRY' || error?.message?.includes('Duplicate')) {
+        throw new Error("This email is already subscribed.");
+      }
+      fail("Newsletter subscription", error);
+    }
+  });
+
+export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string }) => d)
+  .handler(async ({ data }) => {
+    checkToken(data.token);
+    try {
+      const { getNewsletterSubscribers } = await import("@/lib/db/index.server");
+      return await getNewsletterSubscribers();
+    } catch (error) {
+      fail("Database request", error);
+    }
+  });
+
+export const adminDeleteNewsletterSubscriber = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string; id: number }) => d)
+  .handler(async ({ data }) => {
+    checkToken(data.token);
+    try {
+      const { deleteNewsletterSubscriber } = await import("@/lib/db/index.server");
+      await deleteNewsletterSubscriber(data.id);
+      return { ok: true };
+    } catch (error) {
+      fail("Database request", error);
+    }
+  });

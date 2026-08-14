@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { contact, socialLinks } from "@/lib/site-data";
 import { CatalogueDownload } from "@/components/CatalogueDownload";
+import { subscribeToNewsletter } from "@/lib/cms.functions";
 
 const quickLinks = [
   { to: "/", label: "Home" },
@@ -24,6 +25,38 @@ const certifications = ["ISO Certified", "Food Grade Certified", "Green Building
 
 export function SiteFooter() {
   const [joined, setJoined] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const emailInput = form.elements.namedItem("newsletter-email") as HTMLInputElement;
+    const email = emailInput?.value?.trim();
+
+    if (!email) {
+      setError("Please enter your email address");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await subscribeToNewsletter({
+        email,
+        ipAddress: undefined,
+        userAgent: navigator.userAgent,
+      });
+      setJoined(true);
+      form.reset();
+    } catch (err: any) {
+      setError(err.message || "Subscription failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="relative gradient-ink text-white/85 mt-28 overflow-hidden">
@@ -45,21 +78,30 @@ export function SiteFooter() {
             </p>
           </div>
           <form
-            onSubmit={e => { e.preventDefault(); setJoined(true); }}
+            onSubmit={handleNewsletterSubmit}
             className="flex flex-col sm:flex-row gap-3"
           >
             <label htmlFor="newsletter-email" className="sr-only">Email address</label>
             <input
               id="newsletter-email"
+              name="newsletter-email"
               type="email"
               required
+              disabled={loading || joined}
               placeholder="you@company.com"
-              className="flex-1 min-h-12 rounded-full bg-white/10 border border-white/20 px-5 text-sm text-white placeholder:text-white/45 focus:outline-none focus:border-brand transition"
+              className="flex-1 min-h-12 rounded-full bg-white/10 border border-white/20 px-5 text-sm text-white placeholder:text-white/45 focus:outline-none focus:border-brand transition disabled:opacity-50"
             />
-            <button type="submit" className="btn-luxe btn-luxe-primary text-sm">Subscribe</button>
+            <button 
+              type="submit" 
+              disabled={loading || joined}
+              className="btn-luxe btn-luxe-primary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Subscribing..." : "Subscribe"}
+            </button>
             <p role="status" aria-live="polite" className="sr-only">{joined ? "Subscribed" : ""}</p>
           </form>
           {joined && <p className="text-sm text-brand md:col-span-2">✓ You're on the list — thank you.</p>}
+          {error && <p className="text-sm text-red-400 md:col-span-2">✗ {error}</p>}
         </div>
       </div>
 
