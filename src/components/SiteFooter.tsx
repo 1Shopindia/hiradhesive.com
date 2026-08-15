@@ -54,8 +54,10 @@ export function SiteFooter() {
     try {
       console.log("[Newsletter] Calling subscribeToNewsletter with email length:", email.length);
       await subscribeToNewsletter({
-        email,
-        userAgent: navigator.userAgent,
+        data: {
+          email,
+          userAgent: navigator.userAgent,
+        },
       });
       console.log("[Newsletter] Subscription successful");
       setJoined(true);
