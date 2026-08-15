@@ -334,13 +334,7 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
   });
 
 export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
-  .validator((d: unknown) => {
-    const data = d as { token?: string };
-    if (!data || typeof data.token !== 'string') {
-      throw new Error("Unauthorized");
-    }
-    return data as { token: string };
-  })
+  .inputValidator((d: { token: string }) => d)
   .handler(async ({ data }) => {
     checkToken(data.token);
     try {
@@ -352,13 +346,7 @@ export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
   });
 
 export const adminDeleteNewsletterSubscriber = createServerFn({ method: "POST" })
-  .validator((d: unknown) => {
-    const data = d as { token?: string; id?: number };
-    if (!data || typeof data.token !== 'string' || typeof data.id !== 'number') {
-      throw new Error("Invalid request");
-    }
-    return data as { token: string; id: number };
-  })
+  .inputValidator((d: { token: string; id: number }) => d)
   .handler(async ({ data }) => {
     checkToken(data.token);
     try {
