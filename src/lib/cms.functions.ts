@@ -302,54 +302,49 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
 
 // -------- Newsletter Subscriptions --------
 
-export const subscribeToNewsletter = createServerFn({ method: "POST" }).handler(async (ctx) => {
-  try {
-    // Get data from context
-    const rawData = await ctx.request.json();
-    
-    console.log("[subscribeToNewsletter] Raw data received:", typeof rawData, rawData ? "has data" : "no data");
-    console.log("[subscribeToNewsletter] Data keys:", rawData && typeof rawData === 'object' ? Object.keys(rawData) : "N/A");
-    
-    const data = rawData as { email?: string; ipAddress?: string; userAgent?: string };
-    
-    console.log("[subscribeToNewsletter] Email type:", typeof data?.email);
-    console.log("[subscribeToNewsletter] Email present:", !!data?.email);
-    console.log("[subscribeToNewsletter] Email length:", data?.email?.length ?? 0);
-    
-    if (!data || !data.email || typeof data.email !== 'string') {
-      console.error("[subscribeToNewsletter] Validation failed - email missing");
+export const subscribeToNewsletter = createServerFn({ method: "POST" })
+  .validator((d: unknown) => {
+    const data = d as { email?: string; userAgent?: string };
+    if (!data || typeof data.email !== 'string') {
       throw new Error("Email is required");
     }
-    
-    const trimmedEmail = data.email.trim();
-    console.log("[subscribeToNewsletter] Trimmed email length:", trimmedEmail.length);
-    
-    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      console.error("[subscribeToNewsletter] Email validation failed");
-      throw new Error("Please enter a valid email address");
+    return data as { email: string; userAgent?: string };
+  })
+  .handler(async ({ data }) => {
+    try {
+      console.log("[subscribeToNewsletter] Email type:", typeof data.email);
+      console.log("[subscribeToNewsletter] Email present:", !!data.email);
+      console.log("[subscribeToNewsletter] Email length:", data.email?.length ?? 0);
+      
+      const trimmedEmail = data.email.trim();
+      console.log("[subscribeToNewsletter] Trimmed email length:", trimmedEmail.length);
+      
+      if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        console.error("[subscribeToNewsletter] Email validation failed");
+        throw new Error("Please enter a valid email address");
+      }
+      
+      console.log("[subscribeToNewsletter] Calling database subscribeNewsletter");
+      const { subscribeNewsletter } = await import("@/lib/db/index.server");
+      await subscribeNewsletter({
+        email: trimmedEmail.toLowerCase(),
+        ipAddress: null,
+        userAgent: data.userAgent ?? null,
+      });
+      console.log("[subscribeToNewsletter] Subscription successful");
+      return { ok: true };
+    } catch (error: any) {
+      console.error("[subscribeToNewsletter] Error:", error.code, error.message);
+      // If duplicate email, show friendly message
+      if (error?.code === 'ER_DUP_ENTRY' || error?.message?.includes('Duplicate')) {
+        throw new Error("This email is already subscribed.");
+      }
+      if (error.message === "Email is required" || error.message === "Please enter a valid email address") {
+        throw error;
+      }
+      fail("Newsletter subscription", error);
     }
-    
-    console.log("[subscribeToNewsletter] Calling database subscribeNewsletter");
-    const { subscribeNewsletter } = await import("@/lib/db/index.server");
-    await subscribeNewsletter({
-      email: trimmedEmail.toLowerCase(),
-      ipAddress: data.ipAddress ?? null,
-      userAgent: data.userAgent ?? null,
-    });
-    console.log("[subscribeToNewsletter] Subscription successful");
-    return { ok: true };
-  } catch (error: any) {
-    console.error("[subscribeToNewsletter] Error:", error.code, error.message);
-    // If duplicate email, show friendly message
-    if (error?.code === 'ER_DUP_ENTRY' || error?.message?.includes('Duplicate')) {
-      throw new Error("This email is already subscribed.");
-    }
-    if (error.message === "Email is required" || error.message === "Please enter a valid email address") {
-      throw error;
-    }
-    fail("Newsletter subscription", error);
-  }
-});
+  });
 
 export const adminListNewsletterSubscribers = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
