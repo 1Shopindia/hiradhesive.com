@@ -282,7 +282,7 @@ export function productFaqs(name: string, category: string, coverage: string | n
   return [
     {
       q: `What is ${name}?`,
-      a: `${name} is a premium ${category.toLowerCase()} product manufactured by HIR Industries, engineered with German-American-Japanese technology for professional-grade construction and finishing work.`,
+      a: `${name} is a premium ${category.toLowerCase()} product manufactured by HIR, engineered with German-American-Japanese technology for professional-grade construction and finishing work.`,
     },
     {
       q: `How much coverage does ${name} provide?`,
@@ -292,7 +292,7 @@ export function productFaqs(name: string, category: string, coverage: string | n
     },
     {
       q: `What pack sizes is ${name} available in?`,
-      a: pack ? `${name} is available in ${pack}.` : `Contact HIR Industries for the currently stocked pack sizes.`,
+      a: pack ? `${name} is available in ${pack}.` : `Contact HIR for the currently stocked pack sizes.`,
     },
     {
       q: `Is ${name} suitable for interior and exterior applications?`,
@@ -300,7 +300,7 @@ export function productFaqs(name: string, category: string, coverage: string | n
     },
     {
       q: `Where can I buy ${name}?`,
-      a: `You can enquire directly through the HIR Industries contact page. HIR ships across India and to distributors in the Middle East, USA, UK, Australia, South Africa and South-East Asia.`,
+      a: `You can enquire directly through the HIR contact page. HIR ships across India and to distributors in the Middle East, USA, UK, Australia, South Africa and South-East Asia.`,
     },
   ];
 }

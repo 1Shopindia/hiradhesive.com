@@ -38,7 +38,13 @@ export function SiteFooter() {
     const email = emailInput?.value?.trim();
 
     if (!email) {
-      setError("Please enter your email address");
+      setError("Email is required");
+      setLoading(false);
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address");
       setLoading(false);
       return;
     }
