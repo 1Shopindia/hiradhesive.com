@@ -87,6 +87,11 @@ function BlogDetail() {
             {blog.published_at && <time dateTime={blog.published_at}>{dateStr}</time>}
           </p>
         )}
+        {blog.excerpt && (
+          <p className="text-lg text-muted-foreground mt-6 leading-relaxed border-l-4 border-brand pl-4 italic">
+            {blog.excerpt}
+          </p>
+        )}
         {blog.image && (
           <img src={blog.image} alt={blog.title} loading="eager" decoding="async"
             className="w-full rounded-xl mt-6 mb-8" />
