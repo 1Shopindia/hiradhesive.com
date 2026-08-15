@@ -304,10 +304,26 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
 
 export const subscribeToNewsletter = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
+    console.log("[validator] Raw input received:");
+    console.log("[validator] - typeof d:", typeof d);
+    console.log("[validator] - d is null:", d === null);
+    console.log("[validator] - d is undefined:", d === undefined);
+    console.log("[validator] - d exists:", !!d);
+    
+    if (d && typeof d === 'object') {
+      console.log("[validator] - Object.keys(d):", Object.keys(d));
+      const data = d as { email?: string; userAgent?: string };
+      console.log("[validator] - data.email exists:", 'email' in data);
+      console.log("[validator] - typeof data.email:", typeof data.email);
+      console.log("[validator] - data.email length:", typeof data.email === 'string' ? data.email.length : 'N/A');
+    }
+    
     const data = d as { email?: string; userAgent?: string };
     if (!data || typeof data.email !== 'string') {
+      console.error("[validator] Validation failed - data or email invalid");
       throw new Error("Email is required");
     }
+    console.log("[validator] Validation passed, returning data");
     return data as { email: string; userAgent?: string };
   })
   .handler(async ({ data }) => {
