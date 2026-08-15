@@ -40,7 +40,7 @@ function NewsletterAdmin() {
   async function loadSubscribers() {
     try {
       setLoading(true);
-      const data = await adminListNewsletterSubscribers({ token: ADMIN_TOKEN });
+      const data = await adminListNewsletterSubscribers({ data: { token: ADMIN_TOKEN } });
       setSubscribers(data);
     } catch (err) {
       console.error("Failed to load subscribers:", err);
@@ -54,7 +54,7 @@ function NewsletterAdmin() {
     
     try {
       setDeleting(id);
-      await adminDeleteNewsletterSubscriber({ token: ADMIN_TOKEN, id });
+      await adminDeleteNewsletterSubscriber({ data: { token: ADMIN_TOKEN, id } });
       setSubscribers(prev => prev.filter(s => s.id !== id));
     } catch (err: any) {
       alert(err.message || "Delete failed");
