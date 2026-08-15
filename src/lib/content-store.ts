@@ -169,19 +169,19 @@ function ensureBlogs() {
 /* ------------------------------------------------------------------ */
 
 export async function saveProduct(p: CMSProduct, originalSlug?: string) {
-  await adminSaveProduct({ data: { token: ADMIN_TOKEN, product: p, originalSlug } });
+  await adminSaveProduct({ token: ADMIN_TOKEN, product: p, originalSlug });
   await fetchProducts();
 }
 export async function deleteProduct(slug: string) {
-  await adminDeleteProduct({ data: { token: ADMIN_TOKEN, slug } });
+  await adminDeleteProduct({ token: ADMIN_TOKEN, slug });
   await fetchProducts();
 }
 export async function saveBlog(b: CMSBlog, originalSlug?: string) {
-  await adminSaveBlog({ data: { token: ADMIN_TOKEN, blog: b, originalSlug } });
+  await adminSaveBlog({ token: ADMIN_TOKEN, blog: b, originalSlug });
   await fetchBlogs();
 }
 export async function deleteBlog(slug: string) {
-  await adminDeleteBlog({ data: { token: ADMIN_TOKEN, slug } });
+  await adminDeleteBlog({ token: ADMIN_TOKEN, slug });
   await fetchBlogs();
 }
 
