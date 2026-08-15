@@ -304,25 +304,46 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
 
 export const subscribeToNewsletter = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
+    console.log("[subscribeToNewsletter:validator] Received data:", typeof d, d ? "has data" : "no data");
+    console.log("[subscribeToNewsletter:validator] Data keys:", d && typeof d === 'object' ? Object.keys(d) : "N/A");
+    
     const data = d as { email?: string; ipAddress?: string; userAgent?: string };
-    if (!data || typeof data.email !== 'string') {
+    
+    console.log("[subscribeToNewsletter:validator] Email type:", typeof data.email);
+    console.log("[subscribeToNewsletter:validator] Email present:", !!data.email);
+    console.log("[subscribeToNewsletter:validator] Email length:", data.email?.length ?? 0);
+    
+    if (!data || typeof data.email !== 'string' || !data.email.trim()) {
+      console.error("[subscribeToNewsletter:validator] Validation failed - email missing or invalid");
       throw new Error("Email is required");
     }
+    
+    console.log("[subscribeToNewsletter:validator] Validation passed");
     return data as { email: string; ipAddress?: string; userAgent?: string };
   })
   .handler(async ({ data }) => {
-    if (!data.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    console.log("[subscribeToNewsletter:handler] Email received, length:", data.email.length);
+    
+    const trimmedEmail = data.email.trim();
+    console.log("[subscribeToNewsletter:handler] Trimmed email length:", trimmedEmail.length);
+    
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      console.error("[subscribeToNewsletter:handler] Email validation failed");
       throw new Error("Please provide a valid email address.");
     }
+    
     try {
+      console.log("[subscribeToNewsletter:handler] Calling database subscribeNewsletter");
       const { subscribeNewsletter } = await import("@/lib/db/index.server");
       await subscribeNewsletter({
-        email: data.email.trim().toLowerCase(),
+        email: trimmedEmail.toLowerCase(),
         ipAddress: data.ipAddress ?? null,
         userAgent: data.userAgent ?? null,
       });
+      console.log("[subscribeToNewsletter:handler] Subscription successful");
       return { ok: true };
     } catch (error: any) {
+      console.error("[subscribeToNewsletter:handler] Database error:", error.code, error.message);
       // If duplicate email, show friendly message
       if (error?.code === 'ER_DUP_ENTRY' || error?.message?.includes('Duplicate')) {
         throw new Error("This email is already subscribed.");

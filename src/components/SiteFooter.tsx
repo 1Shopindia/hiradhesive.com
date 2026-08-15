@@ -37,6 +37,8 @@ export function SiteFooter() {
     const emailInput = form.elements.namedItem("newsletter-email") as HTMLInputElement;
     const email = emailInput?.value?.trim();
 
+    console.log("[Newsletter] Email input value:", email ? `[${email.length} chars]` : "empty");
+
     if (!email) {
       setError("Email is required");
       setLoading(false);
@@ -50,14 +52,16 @@ export function SiteFooter() {
     }
 
     try {
+      console.log("[Newsletter] Calling subscribeToNewsletter with email length:", email.length);
       await subscribeToNewsletter({
         email,
-        ipAddress: undefined,
         userAgent: navigator.userAgent,
       });
+      console.log("[Newsletter] Subscription successful");
       setJoined(true);
       form.reset();
     } catch (err: any) {
+      console.error("[Newsletter] Subscription failed:", err.message);
       setError(err.message || "Subscription failed. Please try again.");
     } finally {
       setLoading(false);
