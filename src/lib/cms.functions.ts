@@ -303,51 +303,22 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
 // -------- Newsletter Subscriptions --------
 
 export const subscribeToNewsletter = createServerFn({ method: "POST" })
-  .validator((d: unknown) => {
-    console.log("[validator] Raw input received:");
-    console.log("[validator] - typeof d:", typeof d);
-    console.log("[validator] - d is null:", d === null);
-    console.log("[validator] - d is undefined:", d === undefined);
-    console.log("[validator] - d exists:", !!d);
-    
-    if (d && typeof d === 'object') {
-      console.log("[validator] - Object.keys(d):", Object.keys(d));
-      const data = d as { email?: string; userAgent?: string };
-      console.log("[validator] - data.email exists:", 'email' in data);
-      console.log("[validator] - typeof data.email:", typeof data.email);
-      console.log("[validator] - data.email length:", typeof data.email === 'string' ? data.email.length : 'N/A');
-    }
-    
-    const data = d as { email?: string; userAgent?: string };
-    if (!data || typeof data.email !== 'string') {
-      console.error("[validator] Validation failed - data or email invalid");
-      throw new Error("Email is required");
-    }
-    console.log("[validator] Validation passed, returning data");
-    return data as { email: string; userAgent?: string };
-  })
+  .inputValidator((d: { email: string; userAgent?: string }) => d)
   .handler(async ({ data }) => {
     try {
-      console.log("[subscribeToNewsletter] Email type:", typeof data.email);
-      console.log("[subscribeToNewsletter] Email present:", !!data.email);
-      console.log("[subscribeToNewsletter] Email length:", data.email?.length ?? 0);
-      
       const trimmedEmail = data.email.trim();
-      console.log("[subscribeToNewsletter] Trimmed email length:", trimmedEmail.length);
       
       if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-        console.error("[subscribeToNewsletter] Email validation failed");
         throw new Error("Please enter a valid email address");
       }
       
-      console.log("[subscribeToNewsletter] Calling database subscribeNewsletter");
       const { subscribeNewsletter } = await import("@/lib/db/index.server");
       await subscribeNewsletter({
         email: trimmedEmail.toLowerCase(),
         ipAddress: null,
         userAgent: data.userAgent ?? null,
       });
-      console.log("[subscribeToNewsletter] Subscription successful");
+      
       return { ok: true };
     } catch (error: any) {
       console.error("[subscribeToNewsletter] Error:", error.code, error.message);
@@ -355,7 +326,7 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
       if (error?.code === 'ER_DUP_ENTRY' || error?.message?.includes('Duplicate')) {
         throw new Error("This email is already subscribed.");
       }
-      if (error.message === "Email is required" || error.message === "Please enter a valid email address") {
+      if (error.message === "Please enter a valid email address") {
         throw error;
       }
       fail("Newsletter subscription", error);
