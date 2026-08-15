@@ -106,7 +106,7 @@ function AdminBlogs() {
       sort_order: Number(d.sort_order) || 0,
     };
     try {
-      await saveBlog(record, d.originalSlug && d.originalSlug !== slug ? d.originalSlug : undefined);
+      await saveBlog(record, d.originalSlug);
       toast.success("Saved");
       setDraft(null);
     } catch (e) {
