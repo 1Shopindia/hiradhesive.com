@@ -309,9 +309,9 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
     
     const data = d as { email?: string; ipAddress?: string; userAgent?: string };
     
-    console.log("[subscribeToNewsletter:validator] Email type:", typeof data.email);
-    console.log("[subscribeToNewsletter:validator] Email present:", !!data.email);
-    console.log("[subscribeToNewsletter:validator] Email length:", data.email?.length ?? 0);
+    console.log("[subscribeToNewsletter:validator] Email type:", typeof data?.email);
+    console.log("[subscribeToNewsletter:validator] Email present:", !!data?.email);
+    console.log("[subscribeToNewsletter:validator] Email length:", data?.email?.length ?? 0);
     
     if (!data || typeof data.email !== 'string' || !data.email.trim()) {
       console.error("[subscribeToNewsletter:validator] Validation failed - email missing or invalid");
@@ -322,6 +322,11 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
     return data as { email: string; ipAddress?: string; userAgent?: string };
   })
   .handler(async ({ data }) => {
+    if (!data || !data.email) {
+      console.error("[subscribeToNewsletter:handler] Data or email is undefined");
+      throw new Error("Email is required");
+    }
+    
     console.log("[subscribeToNewsletter:handler] Email received, length:", data.email.length);
     
     const trimmedEmail = data.email.trim();
@@ -329,7 +334,7 @@ export const subscribeToNewsletter = createServerFn({ method: "POST" })
     
     if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       console.error("[subscribeToNewsletter:handler] Email validation failed");
-      throw new Error("Please provide a valid email address.");
+      throw new Error("Please enter a valid email address");
     }
     
     try {
