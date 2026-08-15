@@ -28,6 +28,8 @@ function NewsletterAdmin() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<number | null>(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     if (isAdmin()) {
@@ -62,9 +64,28 @@ function NewsletterAdmin() {
   }
 
   function downloadExcel() {
+    // Filter subscribers based on date range
+    let filteredSubscribers = subscribers;
+    
+    if (startDate || endDate) {
+      filteredSubscribers = subscribers.filter(sub => {
+        const subDate = new Date(sub.subscribed_at);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+        
+        // Set time to start of day for comparison
+        if (start) start.setHours(0, 0, 0, 0);
+        if (end) end.setHours(23, 59, 59, 999);
+        
+        if (start && subDate < start) return false;
+        if (end && subDate > end) return false;
+        return true;
+      });
+    }
+    
     // Create CSV content
     const headers = ["Email", "Subscribed Date", "Subscribed Time", "IP Address", "Status"];
-    const rows = subscribers.map(sub => {
+    const rows = filteredSubscribers.map(sub => {
       const date = new Date(sub.subscribed_at);
       return [
         sub.email,
@@ -85,7 +106,10 @@ function NewsletterAdmin() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `newsletter-subscribers-${new Date().toISOString().split('T')[0]}.csv`;
+    const filename = startDate || endDate 
+      ? `newsletter-subscribers-${startDate || 'all'}-to-${endDate || 'all'}.csv`
+      : `newsletter-subscribers-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -136,6 +160,64 @@ function NewsletterAdmin() {
         )}
       </div>
 
+      {/* Date Filter Section */}
+      {subscribers.length > 0 && (
+        <div className="bg-white rounded-xl shadow-soft p-4 mb-6">
+          <h3 className="text-sm font-semibold mb-3">Filter by Date Range</h3>
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-xs text-muted-foreground mb-1">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+              />
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-xs text-muted-foreground mb-1">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+              />
+            </div>
+            {(startDate || endDate) && (
+              <button
+                onClick={() => {
+                  setStartDate("");
+                  setEndDate("");
+                }}
+                className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-secondary transition"
+              >
+                Clear Filter
+              </button>
+            )}
+            <div className="text-xs text-muted-foreground flex items-center gap-2">
+              <span>
+                {startDate || endDate ? (
+                  <>
+                    Showing: {subscribers.filter(sub => {
+                      const subDate = new Date(sub.subscribed_at);
+                      const start = startDate ? new Date(startDate) : null;
+                      const end = endDate ? new Date(endDate) : null;
+                      if (start) start.setHours(0, 0, 0, 0);
+                      if (end) end.setHours(23, 59, 59, 999);
+                      if (start && subDate < start) return false;
+                      if (end && subDate > end) return false;
+                      return true;
+                    }).length} of {subscribers.length}
+                  </>
+                ) : (
+                  `Showing all ${subscribers.length} subscribers`
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {subscribers.length === 0 ? (
         <div className="text-center py-16 bg-secondary/30 rounded-xl">
           <Mail className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
@@ -160,7 +242,19 @@ function NewsletterAdmin() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {subscribers.map((sub, index) => {
+                {subscribers
+                  .filter(sub => {
+                    if (!startDate && !endDate) return true;
+                    const subDate = new Date(sub.subscribed_at);
+                    const start = startDate ? new Date(startDate) : null;
+                    const end = endDate ? new Date(endDate) : null;
+                    if (start) start.setHours(0, 0, 0, 0);
+                    if (end) end.setHours(23, 59, 59, 999);
+                    if (start && subDate < start) return false;
+                    if (end && subDate > end) return false;
+                    return true;
+                  })
+                  .map((sub, index) => {
                   const { date, time } = formatDate(sub.subscribed_at);
                   return (
                     <tr key={sub.id} className="hover:bg-secondary/30 transition">
