@@ -15,11 +15,13 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DbDiagnosticRouteImport } from './routes/db-diagnostic'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapBlogsDotxmlRouteImport } from './routes/sitemap-blogs[.]xml'
 import { Route as SitemapImagesDotxmlRouteImport } from './routes/sitemap-images[.]xml'
 import { Route as SitemapPagesDotxmlRouteImport } from './routes/sitemap-pages[.]xml'
 import { Route as SitemapProductsDotxmlRouteImport } from './routes/sitemap-products[.]xml'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VisualizerRouteImport } from './routes/visualizer'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBlogsRouteImport } from './routes/admin.blogs'
@@ -65,6 +67,11 @@ const DbDiagnosticRoute = DbDiagnosticRouteImport.update({
   path: '/db-diagnostic',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapBlogsDotxmlRoute = SitemapBlogsDotxmlRouteImport.update({
   id: '/sitemap-blogs.xml',
   path: '/sitemap-blogs.xml',
@@ -88,6 +95,11 @@ const SitemapProductsDotxmlRoute = SitemapProductsDotxmlRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VisualizerRoute = VisualizerRouteImport.update({
@@ -169,11 +181,13 @@ export interface FileRoutesByFullPath {
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
   '/db-diagnostic': typeof DbDiagnosticRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-products.xml': typeof SitemapProductsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
@@ -195,11 +209,13 @@ export interface FileRoutesByTo {
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
   '/db-diagnostic': typeof DbDiagnosticRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-products.xml': typeof SitemapProductsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
@@ -223,11 +239,13 @@ export interface FileRoutesById {
   '/calculator': typeof CalculatorRoute
   '/contact': typeof ContactRoute
   '/db-diagnostic': typeof DbDiagnosticRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap-blogs.xml': typeof SitemapBlogsDotxmlRoute
   '/sitemap-images.xml': typeof SitemapImagesDotxmlRoute
   '/sitemap-pages.xml': typeof SitemapPagesDotxmlRoute
   '/sitemap-products.xml': typeof SitemapProductsDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
@@ -252,11 +270,13 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/contact'
     | '/db-diagnostic'
+    | '/privacy'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-products.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
@@ -278,11 +298,13 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/contact'
     | '/db-diagnostic'
+    | '/privacy'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-products.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
@@ -305,11 +327,13 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/contact'
     | '/db-diagnostic'
+    | '/privacy'
     | '/sitemap-blogs.xml'
     | '/sitemap-images.xml'
     | '/sitemap-pages.xml'
     | '/sitemap-products.xml'
     | '/sitemap.xml'
+    | '/terms'
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
@@ -333,11 +357,13 @@ export interface RootRouteChildren {
   CalculatorRoute: typeof CalculatorRoute
   ContactRoute: typeof ContactRoute
   DbDiagnosticRoute: typeof DbDiagnosticRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapBlogsDotxmlRoute: typeof SitemapBlogsDotxmlRoute
   SitemapImagesDotxmlRoute: typeof SitemapImagesDotxmlRoute
   SitemapPagesDotxmlRoute: typeof SitemapPagesDotxmlRoute
   SitemapProductsDotxmlRoute: typeof SitemapProductsDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   VisualizerRoute: typeof VisualizerRoute
   BlogsSlugRoute: typeof BlogsSlugRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
@@ -392,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DbDiagnosticRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap-blogs.xml': {
       id: '/sitemap-blogs.xml'
       path: '/sitemap-blogs.xml'
@@ -425,6 +458,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/visualizer': {
@@ -555,11 +595,13 @@ const rootRouteChildren: RootRouteChildren = {
   CalculatorRoute: CalculatorRoute,
   ContactRoute: ContactRoute,
   DbDiagnosticRoute: DbDiagnosticRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapBlogsDotxmlRoute: SitemapBlogsDotxmlRoute,
   SitemapImagesDotxmlRoute: SitemapImagesDotxmlRoute,
   SitemapPagesDotxmlRoute: SitemapPagesDotxmlRoute,
   SitemapProductsDotxmlRoute: SitemapProductsDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   VisualizerRoute: VisualizerRoute,
   BlogsSlugRoute: BlogsSlugRoute,
   ProductsSlugRoute: ProductsSlugRoute,

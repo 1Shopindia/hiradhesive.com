@@ -11,6 +11,8 @@ const quickLinks = [
   { to: "/visualizer", label: "Visualizer" },
   { to: "/blogs", label: "Blogs" },
   { to: "/contact", label: "Contact Us" },
+  { to: "/terms", label: "Terms & Conditions" },
+  { to: "/privacy", label: "Privacy Policy" },
 ] as const;
 
 const categories = [
