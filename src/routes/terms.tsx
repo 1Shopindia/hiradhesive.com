@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
-import { termsContent } from "@/config/legalContent";
+import { getLegalPage } from "@/lib/cms.functions";
 import { buildMeta, canonicalLinks, breadcrumbSchema, jsonLdScript } from "@/lib/seo";
 
 export const Route = createFileRoute("/terms")({
@@ -19,9 +19,31 @@ export const Route = createFileRoute("/terms")({
       ])),
     ],
   }),
+  loader: async () => {
+    try {
+      const page = await getLegalPage({ data: { id: 'terms' } });
+      return {
+        title: page.title,
+        lastUpdated: new Date(page.last_updated).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long' 
+        }),
+        sections: page.content.sections,
+      };
+    } catch (error) {
+      console.error('[Terms] Failed to load:', error);
+      // Fallback to default content if database fails
+      return {
+        title: "Terms & Conditions",
+        lastUpdated: "January 2026",
+        sections: [],
+      };
+    }
+  },
   component: TermsPage,
 });
 
 function TermsPage() {
-  return <LegalPage {...termsContent} />;
+  const data = Route.useLoaderData();
+  return <LegalPage {...data} />;
 }

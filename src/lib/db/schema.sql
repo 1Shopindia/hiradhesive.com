@@ -68,3 +68,13 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_products_published_sort ON products(published, sort_order);
 CREATE INDEX IF NOT EXISTS idx_blogs_published_sort ON blogs(published, sort_order);
+
+-- Legal pages table
+CREATE TABLE IF NOT EXISTS legal_pages (
+  id VARCHAR(50) PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content JSON NOT NULL,
+  last_updated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  updated_by VARCHAR(255),
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

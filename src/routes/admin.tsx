@@ -83,6 +83,7 @@ function AdminLayout() {
     { to: "/admin/blogs", label: "Blogs", exact: false },
     { to: "/admin/catalogue", label: "Catalogue", exact: false },
     { to: "/admin/newsletter", label: "Newsletter", exact: false },
+    { to: "/admin/legal", label: "Legal Pages", exact: false },
     { to: "/admin/seo", label: "SEO Audit", exact: false },
   ] as const;
 

@@ -26,6 +26,7 @@ import { Route as VisualizerRouteImport } from './routes/visualizer'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBlogsRouteImport } from './routes/admin.blogs'
 import { Route as AdminCatalogueRouteImport } from './routes/admin.catalogue'
+import { Route as AdminLegalRouteImport } from './routes/admin.legal'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminSeoRouteImport } from './routes/admin.seo'
@@ -122,6 +123,11 @@ const AdminCatalogueRoute = AdminCatalogueRouteImport.update({
   path: '/catalogue',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLegalRoute = AdminLegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
   id: '/newsletter',
   path: '/newsletter',
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/legal': typeof AdminLegalRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/seo': typeof AdminSeoRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/legal': typeof AdminLegalRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/seo': typeof AdminSeoRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/visualizer': typeof VisualizerRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/catalogue': typeof AdminCatalogueRoute
+  '/admin/legal': typeof AdminLegalRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/products': typeof AdminProductsRoute
   '/admin/seo': typeof AdminSeoRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
+    | '/admin/legal'
     | '/admin/newsletter'
     | '/admin/products'
     | '/admin/seo'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
+    | '/admin/legal'
     | '/admin/newsletter'
     | '/admin/products'
     | '/admin/seo'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/visualizer'
     | '/admin/blogs'
     | '/admin/catalogue'
+    | '/admin/legal'
     | '/admin/newsletter'
     | '/admin/products'
     | '/admin/seo'
@@ -495,6 +507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCatalogueRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/legal': {
+      id: '/admin/legal'
+      path: '/legal'
+      fullPath: '/admin/legal'
+      preLoaderRoute: typeof AdminLegalRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/newsletter': {
       id: '/admin/newsletter'
       path: '/newsletter'
@@ -571,6 +590,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminBlogsRoute: typeof AdminBlogsRoute
   AdminCatalogueRoute: typeof AdminCatalogueRoute
+  AdminLegalRoute: typeof AdminLegalRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminProductsRoute: typeof AdminProductsRoute
   AdminSeoRoute: typeof AdminSeoRoute
@@ -580,6 +600,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogsRoute: AdminBlogsRoute,
   AdminCatalogueRoute: AdminCatalogueRoute,
+  AdminLegalRoute: AdminLegalRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminProductsRoute: AdminProductsRoute,
   AdminSeoRoute: AdminSeoRoute,

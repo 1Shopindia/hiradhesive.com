@@ -357,3 +357,104 @@ export const adminDeleteNewsletterSubscriber = createServerFn({ method: "POST" }
       fail("Database request", error);
     }
   });
+
+// -------- Legal Pages --------
+
+export interface LegalPageContent {
+  sections: Array<{
+    heading: string;
+    content: string | string[];
+  }>;
+}
+
+export interface LegalPage {
+  id: string;
+  title: string;
+  content: LegalPageContent;
+  last_updated: string;
+  updated_by: string | null;
+}
+
+export const getLegalPage = createServerFn({ method: "GET" })
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const { getLegalPage: getPage, initializeLegalPages } = await import("@/lib/db/index.server");
+      
+      // Initialize tables and default content if needed
+      await initializeLegalPages();
+      
+      const page = await getPage(data.id);
+      if (!page) {
+        throw new Error(`Legal page '${data.id}' not found`);
+      }
+      
+      return {
+        id: page.id,
+        title: page.title,
+        content: page.content,
+        last_updated: page.last_updated,
+        updated_by: page.updated_by,
+      } as LegalPage;
+    } catch (error) {
+      fail("Database request", error);
+    }
+  });
+
+export const adminGetLegalPage = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string; id: string }) => d)
+  .handler(async ({ data }) => {
+    checkToken(data.token);
+    try {
+      const { getLegalPage: getPage, initializeLegalPages } = await import("@/lib/db/index.server");
+      
+      // Initialize tables and default content if needed
+      await initializeLegalPages();
+      
+      const page = await getPage(data.id);
+      if (!page) {
+        throw new Error(`Legal page '${data.id}' not found`);
+      }
+      
+      return {
+        id: page.id,
+        title: page.title,
+        content: page.content,
+        last_updated: page.last_updated,
+        updated_by: page.updated_by,
+      } as LegalPage;
+    } catch (error) {
+      fail("Database request", error);
+    }
+  });
+
+export const adminSaveLegalPage = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string; id: string; title: string; content: LegalPageContent; updated_by: string }) => d)
+  .handler(async ({ data }) => {
+    checkToken(data.token);
+    try {
+      const { updateLegalPage } = await import("@/lib/db/index.server");
+      
+      if (!data.id || (data.id !== 'terms' && data.id !== 'privacy')) {
+        throw new Error("Invalid legal page ID. Must be 'terms' or 'privacy'.");
+      }
+      
+      if (!data.title?.trim()) {
+        throw new Error("Title is required.");
+      }
+      
+      if (!data.content?.sections || !Array.isArray(data.content.sections)) {
+        throw new Error("Content sections are required.");
+      }
+      
+      await updateLegalPage(data.id, {
+        title: data.title,
+        content: data.content,
+        updated_by: data.updated_by || 'admin',
+      });
+      
+      return { ok: true };
+    } catch (error) {
+      fail("Database request", error);
+    }
+  });
