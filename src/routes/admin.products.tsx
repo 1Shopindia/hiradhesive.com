@@ -159,7 +159,10 @@ function AdminProducts() {
                 {p.name}
                 {!p.published && <span className="text-[10px] bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded uppercase font-semibold">Draft</span>}
               </p>
-              <p className="text-xs text-muted-foreground truncate">{p.category} · /{p.slug}</p>
+              <p className="text-xs text-muted-foreground truncate">
+                {p.category} · /{p.slug}
+                <span className="ml-2 text-brand font-medium">Order: {p.sort_order}</span>
+              </p>
             </div>
             <button type="button" onClick={() => setDraft(toDraft(p))} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Edit</button>
             <button type="button" onClick={() => duplicate(p)} className="text-sm px-3 py-1.5 rounded-md border border-border hover:border-brand hover:text-brand">Duplicate</button>
@@ -187,7 +190,15 @@ function AdminProducts() {
                     {CATS.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </Field>
-                <Field label="Sort order"><input type="number" value={draft.sort_order} onChange={e => setDraft({ ...draft, sort_order: Number(e.target.value) })} className={input} /></Field>
+                <Field label="Sort order (lower = first in category)">
+                  <input 
+                    type="number" 
+                    value={draft.sort_order} 
+                    onChange={e => setDraft({ ...draft, sort_order: Number(e.target.value) })} 
+                    className={input}
+                    placeholder="0 = first, 100 = last"
+                  />
+                </Field>
                 <Field label="Category label"><input value={draft.category_label} onChange={e => setDraft({ ...draft, category_label: e.target.value })} className={input} /></Field>
                 <Field label="Application area"><input value={draft.application_area} onChange={e => setDraft({ ...draft, application_area: e.target.value })} className={input} /></Field>
               </div>

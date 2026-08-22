@@ -60,8 +60,17 @@ function ProductsPage() {
     let out = selected ? products.filter(p => p.category === selected.key) : products;
     const q = query.trim().toLowerCase();
     if (q) out = out.filter(p => `${p.name} ${p.category} ${p.short ?? ""}`.toLowerCase().includes(q));
-    if (sort === "az") out = [...out].sort((a, b) => a.name.localeCompare(b.name));
-    if (sort === "za") out = [...out].sort((a, b) => b.name.localeCompare(a.name));
+    
+    // Sort based on selected option
+    if (sort === "featured") {
+      // Featured = sort by sort_order (lower numbers first)
+      out = [...out].sort((a, b) => a.sort_order - b.sort_order);
+    } else if (sort === "az") {
+      out = [...out].sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "za") {
+      out = [...out].sort((a, b) => b.name.localeCompare(a.name));
+    }
+    
     return out;
   }, [products, selected, query, sort]);
 
