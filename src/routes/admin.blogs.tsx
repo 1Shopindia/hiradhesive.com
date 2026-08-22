@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { useAllBlogs, saveBlog, deleteBlog, fileToDataUrl, type CMSBlog } from "@/lib/content-store";
+import { useAllBlogs, saveBlog, deleteBlog, type CMSBlog } from "@/lib/content-store";
+import { uploadImage as uploadImageToStorage } from "@/lib/settings-store";
 
 export const Route = createFileRoute("/admin/blogs")({
   component: AdminBlogs,
@@ -117,10 +118,25 @@ function AdminBlogs() {
 
   const uploadImage = async (file: File) => {
     try {
-      const url = await fileToDataUrl(file);
-      setDraft(d => (d ? { ...d, image: url } : d));
+      console.log(`[admin.blogs] Starting upload, file: ${file.name}, bucket: blog-images`);
+      const url = await uploadImageToStorage(file, "blog-images");
+      console.log(`[admin.blogs] Upload complete, returned URL: ${url}`);
+      
+      // Validate URL before setting draft state
+      if (url.startsWith('data:')) {
+        throw new Error('Upload returned base64 data URL instead of file path. Please try again.');
+      }
+      
+      setDraft(d => {
+        if (!d) return d;
+        console.log(`[admin.blogs] Setting draft state, URL being set: ${url}`);
+        return { ...d, image: url };
+      });
       toast.success("Uploaded");
-    } catch (e) { toast.error(e instanceof Error ? e.message : "Upload failed"); }
+    } catch (e) { 
+      console.error(`[admin.blogs] Upload failed:`, e);
+      toast.error(e instanceof Error ? e.message : "Upload failed"); 
+    }
   };
 
   const duplicate = (b: CMSBlog) => {

@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-  useAllProducts, saveProduct, deleteProduct, fileToDataUrl,
+  useAllProducts, saveProduct, deleteProduct,
   type CMSProduct,
 } from "@/lib/content-store";
-import { uploadPdf } from "@/lib/settings-store";
+import { uploadPdf, uploadImage } from "@/lib/settings-store";
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
@@ -117,15 +117,31 @@ function AdminProducts() {
 
   const upload = async (file: File, target: "image" | "shades_image" | "pdf" | "gallery") => {
     try {
-      // PDFs go to file storage (small link), images stay inline as data URLs.
-      const url = target === "pdf" ? await uploadPdf(file) : await fileToDataUrl(file);
+      console.log(`[admin.products] Starting upload for ${target}, file: ${file.name}, bucket: product-images`);
+      // PDFs go to file storage, images go to product-images bucket
+      const url = target === "pdf" 
+        ? await uploadPdf(file) 
+        : await uploadImage(file, "product-images");
+      console.log(`[admin.products] Upload complete for ${target}, returned URL: ${url}`);
+      
+      // Validate URL before setting draft state
+      if (url.startsWith('data:')) {
+        throw new Error('Upload returned base64 data URL instead of file path. Please try again.');
+      }
+      
       setDraft(d => {
         if (!d) return d;
-        if (target === "gallery") return { ...d, gallery: d.gallery ? `${d.gallery}\n${url}` : url };
-        return { ...d, [target]: url };
+        const newDraft = target === "gallery" 
+          ? { ...d, gallery: d.gallery ? `${d.gallery}\n${url}` : url }
+          : { ...d, [target]: url };
+        console.log(`[admin.products] Setting draft state for ${target}, URL being set: ${url}`);
+        return newDraft;
       });
       toast.success("Uploaded");
-    } catch (e) { toast.error(e instanceof Error ? e.message : "Upload failed"); }
+    } catch (e) { 
+      console.error(`[admin.products] Upload failed for ${target}:`, e);
+      toast.error(e instanceof Error ? e.message : "Upload failed"); 
+    }
   };
 
   const duplicate = (p: CMSProduct) => {

@@ -133,6 +133,17 @@ export const adminSaveProduct = createServerFn({ method: "POST" })
       requireSlug(p?.slug, "Save product");
       if (!p.name?.trim()) throw new Error("Save product: a name is required.");
       
+      // Validate image URLs - reject base64 data
+      if (p.image && p.image.startsWith('data:')) {
+        throw new Error('Invalid image URL: base64 data detected. Please upload the image again.');
+      }
+      if (p.shades_image && p.shades_image.startsWith('data:')) {
+        throw new Error('Invalid shades image URL: base64 data detected. Please upload the image again.');
+      }
+      if (p.gallery && p.gallery.some((url: string) => url.startsWith('data:'))) {
+        throw new Error('Invalid gallery image URL: base64 data detected. Please upload the images again.');
+      }
+      
       const productData = {
         slug: p.slug,
         name: p.name,
@@ -211,6 +222,11 @@ export const adminSaveBlog = createServerFn({ method: "POST" })
       const b = data.blog;
       requireSlug(b?.slug, "Save blog");
       if (!b.title?.trim()) throw new Error("Save blog: a title is required.");
+      
+      // Validate image URL - reject base64 data
+      if (b.image && b.image.startsWith('data:')) {
+        throw new Error('Invalid image URL: base64 data detected. Please upload the image again.');
+      }
       
       // If slug changed, delete old blog first
       if (data.originalSlug && data.originalSlug !== b.slug) {
@@ -293,6 +309,39 @@ export const adminUploadPdf = createServerFn({ method: "POST" })
       const url = await uploadFile("product-pdfs", data.filename || "document.pdf", bytes);
       return { url };
     } catch (error: any) {
+      if (error?.statusCode) {
+        throw new Error(error.message);
+      }
+      fail("Upload", error);
+    }
+  });
+
+// -------- Image upload (product and blog images) --------
+
+export const adminUploadImage = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string; bucket: "product-images" | "blog-images"; filename: string; dataUrl: string }) => d)
+  .handler(async ({ data }) => {
+    checkToken(data.token);
+    console.log(`[cms.functions] adminUploadImage called, bucket: ${data.bucket}, filename: ${data.filename}`);
+    const base64 = data.dataUrl.split(",")[1] ?? "";
+    if (!base64) throw new Error("Upload failed: the file could not be read.");
+    const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    console.log(`[cms.functions] Decoded ${bytes.length} bytes`);
+    
+    try {
+      const { uploadFile } = await import("@/lib/storage/index.server");
+      const url = await uploadFile(data.bucket, data.filename || "image.jpg", bytes);
+      console.log(`[cms.functions] uploadFile returned URL: ${url}`);
+      
+      // Validate that we're not returning base64 data
+      if (url.startsWith('data:')) {
+        console.error(`[cms.functions] ERROR: uploadFile returned base64 data instead of file path. URL: ${url.substring(0, 50)}...`);
+        throw new Error('Internal error: uploadFile returned base64 data instead of file path');
+      }
+      
+      return { url };
+    } catch (error: any) {
+      console.error(`[cms.functions] Upload error:`, error);
       if (error?.statusCode) {
         throw new Error(error.message);
       }
